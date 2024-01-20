@@ -98,7 +98,7 @@ export default function AddTask() {
   return (
     <Container>
       <ContainerScroll showsVerticalScrollIndicator={false}>
-        {/* <Container>
+        <Container>
           <Separator>
             <Separator>
               <Label name="Nome" />
@@ -144,7 +144,7 @@ export default function AddTask() {
               </ColorsOrganize>
             </Separator>
           </Separator>
-        </Container> */}
+        </Container>
       </ContainerScroll>
       <FooterCompleter onPress={handleAddTask}>
         <TextCompleter>Criar</TextCompleter>

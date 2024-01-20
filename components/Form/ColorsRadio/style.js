@@ -1,6 +1,6 @@
 import { RFValue } from 'react-native-responsive-fontsize';
 import styled, { css } from 'styled-components/native';
-import { Entypo } from 'react-native-vector-icons/Entypo';
+import Entypo from 'react-native-vector-icons/Entypo';
 export const Container = styled.TouchableOpacity`
   padding: ${RFValue(5)}px;
   background-color: ${({ theme }) => theme.colors.backgroundLight};
