@@ -14,7 +14,7 @@ import {
 import Label from '../../components/Form/Label';
 import Radio from '../../components/Form/Radio';
 import CircleInput from '../../components/Form/CircleInput';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ColorsRadio from '../../components/Form/ColorsRadio';
 import { useItens } from '../../context/ItensContext';
 import { useNavigation } from '@react-navigation/native';
@@ -69,6 +69,8 @@ export default function AddTask() {
   const getData = async (key) => {
     try {
       const jsonValue = await AsyncStorage.getItem(key);
+      //
+      // console.log(jsonValue);
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch (e) {
       console.error(e);
@@ -77,22 +79,67 @@ export default function AddTask() {
 
   const navigation = useNavigation();
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getData('habits');
+        // console.log('bixo', data);
+        setItens(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadData();
+  }, []); // remova a dependência vazia []
+
   const handleAddTask = async () => {
-    setItens((prevItens) => [
-      ...prevItens,
-      {
-        porcent: 30,
-        nome: habitName,
-        i: prevItens.length,
-        meta: meta,
-        days: 5,
-        color: color,
-      },
-    ]);
-    navigation.navigate('Home');
-    await storeData(itens, 'habits');
+    let updatedItens;
+
+    if (itens) {
+      const conflict = itens.filter((e) => {
+        if (e.nome == habitName) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+      if (!conflict[0]?.nome) {
+        //!verifica se conflict é false
+        updatedItens = [
+          ...itens,
+          {
+            porcent: 30,
+            nome: habitName,
+            i: itens.length,
+            meta: meta,
+            days: 0,
+            color: color,
+          },
+        ];
+        await storeData(updatedItens, 'habits');
+      }
+    } else {
+      updatedItens = [
+        {
+          porcent: 30,
+          nome: habitName,
+          i: 1,
+          meta: meta,
+          days: 0,
+          color: color,
+        },
+      ];
+      await storeData(updatedItens, 'habits');
+    }
+
+    console.log(updatedItens);
+    setItens(updatedItens);
+
     const itensBro = await getData('habits');
-    console.log(itensBro);
+
+    navigation.navigate('Home');
   };
 
   return (

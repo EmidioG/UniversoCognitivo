@@ -8,12 +8,14 @@ import {
   NotCheckIcon,
 } from './style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useItens } from '../../context/ItensContext';
 
 export default function Dates(props) {
   const date = new Date();
   const day = date.getDay();
   const diasSem = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
   const daysRemove = [6, 5, 4, 3, 2, 1, 0];
+  const { itens, setItens } = useItens();
 
   const arrumarDate = (days) => {
     const newDate = new Date();
@@ -70,7 +72,7 @@ export default function Dates(props) {
     const updateData = async () => {
       const retrievedData = await getData('item' + props.index);
 
-      console.log(retrievedData);
+      // console.log(retrievedData, 'export');
       setChecklistState(retrievedData);
     };
 
@@ -85,7 +87,7 @@ export default function Dates(props) {
 
       await storeData(checklistState, 'item' + props.index);
       const retrievedData = await getData('item' + props.index);
-      console.log(retrievedData);
+      // console.log(retrievedData, 'im here bro');
     };
 
     updateData();
@@ -108,7 +110,7 @@ export default function Dates(props) {
     }
   }
 
-  function ToggleCheck(item) {
+  async function ToggleCheck(item) {
     const newChecklistState = [...checklistState];
 
     const resultado = newChecklistState.find(
@@ -138,6 +140,16 @@ export default function Dates(props) {
         };
       }
 
+      setItens((e) => {
+        const newItens = [...e];
+        newItens[props.index].days = updatedChecklistState.filter((e) => {
+          return e.checked;
+        }).length;
+
+        return newItens;
+      });
+      // console.log(updatedChecklistState, 'AAAAAAAAAAAAAAAAAAAAAAAA');
+
       setChecklistState(updatedChecklistState);
 
       const updatedDatesPositions = datesPositions.map((objeto) => {
@@ -163,6 +175,13 @@ export default function Dates(props) {
         checked: true,
       };
 
+      setItens((e) => {
+        const newItens = [...e];
+        newItens[props.index].days += 1;
+        return newItens;
+      });
+      // console.log('AAAAAAAAAAAAAAAAAAAAAAAA');
+
       setChecklistState((prevState) => prevState.concat(newItem));
 
       const updatedDatesPositions = datesPositions.map((objeto) => {
@@ -180,9 +199,6 @@ export default function Dates(props) {
       });
 
       setDatesPositions(updatedDatesPositions);
-
-      // console.log(checklistState);
-      // console.log(datesPositions);
     }
   }
 

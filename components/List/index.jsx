@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  SessaoCheck,
-  Habit,
-  HabitPorcent,
-  SessaoAcima,
-  Container,
-  Circle,
-} from './style';
+import { Habit, HabitPorcent, SessaoAcima, Container, Circle } from './style';
 
 import { Dimensions, Text } from 'react-native';
 import Dates from '../Dates';
@@ -41,7 +34,7 @@ export default function List(props) {
 
       <Habit>{props.name}</Habit>
 
-      <Dates index={props.index} />
+      <Dates index={props.index} daysMeta={props.days} />
       <Circle
         tamanho={tamanhoCirculo}
         corI={props.index}
