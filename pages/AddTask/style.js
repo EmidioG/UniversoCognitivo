@@ -16,6 +16,11 @@ export const Meta = styled.View`
   gap: ${RFValue(5)}px;
 `;
 
+export const Type = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
 export const ColorsOrganize = styled.View`
   flex-direction: row;
   align-items: center;

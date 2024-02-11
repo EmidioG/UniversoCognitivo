@@ -2,9 +2,9 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import styled, { css } from 'styled-components/native';
 
 export const Container = styled.TouchableOpacity`
-  padding: ${RFValue(5)}px;
+  padding: ${RFValue(7)}px;
   background-color: ${({ theme }) => theme.colors.backgroundLight};
-  width: ${RFValue(50)}px;
+  width: ${RFValue(60)}px;
 
   ${(props) =>
     props.active == props.index

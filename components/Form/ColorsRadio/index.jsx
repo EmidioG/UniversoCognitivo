@@ -18,12 +18,13 @@ export default function ColorsRadio({
 
   return (
     <Container
+      cor={lightColor}
       onPress={selectButton}
       index={index}
       active={whatIsSelected}
       activeOpacity={0.8}
     >
-      <Icon cor={mainColor}></Icon>
+      <Icon cor={mainColor} active={whatIsSelected}></Icon>
     </Container>
   );
 }

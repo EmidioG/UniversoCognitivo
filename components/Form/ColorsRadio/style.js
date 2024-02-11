@@ -9,7 +9,7 @@ export const Container = styled.TouchableOpacity`
   ${(props) =>
     props.active == props.index
       ? css`
-          background-color: ${({ theme }) => theme.colors.primary1};
+          background-color: ${props.cor};
           border-radius: 5000px;
         `
       : css`
@@ -22,4 +22,13 @@ export const Icon = styled(Entypo).attrs({
 })`
   text-align: center;
   color: ${(props) => props.cor};
+
+  /* ${(props) =>
+    props.active == props.index
+      ? css`
+          transform: scale(1.3);
+        `
+      : css`
+          transform: scale(1.3);
+        `} */
 `;

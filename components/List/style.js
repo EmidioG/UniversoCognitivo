@@ -4,13 +4,20 @@ import { css } from 'styled-components';
 
 export const Habit = styled.Text`
   color: #fff;
-  position: absolute;
   font-size: ${RFValue(12)}px;
   font-weight: bold;
-  bottom: ${RFValue(5)}px;
-  left: ${RFValue(5)}px;
-  z-index: 1;
+  z-index: 2;
 `;
+
+export const Touch = styled.TouchableOpacity`
+  z-index: 2;
+  position: absolute;
+  padding: ${RFValue(5)}px;
+  bottom: ${RFValue(0)}px;
+  left: ${RFValue(0)}px;
+  gap: ${RFValue(18)}px;
+`;
+
 export const HabitPorcent = styled.Text`
   color: #fff;
   font-size: ${RFValue(12)}px;
@@ -43,10 +50,9 @@ export const Container = styled.View`
   height: ${RFValue(60)}px;
   width: 100%;
 
-  ${(props) =>
-    css`
-      background-color: ${props.color};
-    `}
+  ${(props) => css`
+    background-color: ${props.color};
+  `}
 
   border-radius: ${RFValue(6)}px;
   overflow: hidden;
@@ -68,8 +74,7 @@ export const Circle = styled.View`
     `;
   }}
 
-  ${(props) =>
-    css`
-      background-color: ${props.color};
-    `}
+  ${(props) => css`
+    background-color: ${props.color};
+  `}
 `;

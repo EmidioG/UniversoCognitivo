@@ -8,6 +8,7 @@ export const SafeViewAndroid = styled.SafeAreaView`
   background-color: ${({ theme }) => theme.colors.background};
 
   padding: ${RFValue(10)}px;
-  padding-top: ${Platform.OS === 'android' ? StatusBar.currentHeight : 0}px;
+
+  padding-top: 0px;
   position: 'absolute';
 `;

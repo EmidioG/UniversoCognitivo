@@ -8,12 +8,14 @@ import {
   NotCheckIcon,
 } from './style';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useItens } from '../../context/ItensContext';
 
 export default function Dates(props) {
   const date = new Date();
   const day = date.getDay();
   const diasSem = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];
   const daysRemove = [6, 5, 4, 3, 2, 1, 0];
+  const { itens, setItens } = useItens();
 
   const arrumarDate = (days) => {
     const newDate = new Date();
@@ -70,8 +72,10 @@ export default function Dates(props) {
     const updateData = async () => {
       const retrievedData = await getData('item' + props.index);
 
-      console.log(retrievedData);
-      setChecklistState(retrievedData);
+      // console.log(retrievedData);
+
+      // Verificar se retrievedData não é nulo antes de definir o estado
+      setChecklistState(retrievedData || []);
     };
 
     updateData();
@@ -79,17 +83,27 @@ export default function Dates(props) {
 
   useEffect(() => {
     const updateData = async () => {
-      checklistState.map((e) => {
-        verifyCheck(e);
-      });
+      checklistState &&
+        checklistState.map((e) => {
+          verifyCheck(e);
+          // console.log(checklistState);
+        });
 
       await storeData(checklistState, 'item' + props.index);
       const retrievedData = await getData('item' + props.index);
-      console.log(retrievedData);
+      // console.log(retrievedData, 'im here bro');
     };
 
     updateData();
   }, [checklistState]);
+
+  useEffect(() => {
+    const updateData = async () => {
+      await storeData(itens, 'habits');
+    };
+
+    updateData();
+  }, [itens]);
 
   function verifyCheck(item) {
     const newDatesPositions = [...datesPositions];
@@ -138,6 +152,62 @@ export default function Dates(props) {
         };
       }
 
+      if (itens[props.index].tipoDeMeta == 1) {
+        setItens((e) => {
+          const newItens = [...e];
+          newItens[props.index].days = updatedChecklistState.filter((e) => {
+            return e.checked;
+          }).length;
+
+          console.log('rodou 1 stable');
+          return newItens;
+        });
+      } else {
+        setItens((e) => {
+          const newItens = [...e];
+
+          // console.log('rodou 0 stable', newItens[props.index]);
+          let thisDate;
+          let counter = 0;
+
+          updatedChecklistState.sort((a, b) => {
+            return new Date(a.date) - new Date(b.date);
+          });
+
+          updatedChecklistState.forEach((e) => {
+            if (e.checked) {
+              if (thisDate) {
+                const dateNow = new Date(e.date);
+
+                if (
+                  !(
+                    thisDate.getFullYear() == dateNow.getFullYear() &&
+                    thisDate.getMonth() == dateNow.getMonth() &&
+                    thisDate.getDate() == dateNow.getDate()
+                  )
+                ) {
+                  counter = 1;
+                } else {
+                  counter++;
+                }
+              } else {
+                counter++;
+              }
+
+              const dateBro = new Date(e.date);
+              dateBro.setDate(dateBro.getDate() + 1);
+              // console.log(e);
+              thisDate = dateBro;
+
+              // console.log(thisDate);
+            }
+          });
+
+          newItens[props.index].days = counter;
+          return newItens;
+        });
+      }
+
       setChecklistState(updatedChecklistState);
 
       const updatedDatesPositions = datesPositions.map((objeto) => {
@@ -162,8 +232,89 @@ export default function Dates(props) {
         date: item.date,
         checked: true,
       };
+      console.log(itens[props.index].tipoDeMeta);
+      if (itens[props.index].tipoDeMeta == 1) {
+        setItens((e) => {
+          const newItens = [...e];
+          newItens[props.index].days += 1;
+          // console.log(checklistState);
 
-      setChecklistState((prevState) => prevState.concat(newItem));
+          console.log('rodou 1');
+          return newItens;
+        });
+      } else {
+        setItens((e) => {
+          const newItens = [...e];
+          newItens[props.index].days += 1;
+
+          console.log('rodou 0');
+          return newItens;
+        });
+      }
+
+      const updatedChecklistState = [...newChecklistState.concat(newItem)];
+
+      if (itens[props.index].tipoDeMeta == 1) {
+        setItens((e) => {
+          const newItens = [...e];
+          newItens[props.index].days = updatedChecklistState.filter((e) => {
+            return e.checked;
+          }).length;
+
+          console.log('rodou 1 stable');
+          return newItens;
+        });
+      } else {
+        setItens((e) => {
+          const newItens = [...e];
+
+          // console.log('rodou 0 stable', newItens[props.index]);
+          let thisDate;
+          let counter = 0;
+
+          updatedChecklistState.sort((a, b) => {
+            return new Date(a.date) - new Date(b.date);
+          });
+
+          console.log(updatedChecklistState);
+
+          updatedChecklistState.forEach((e) => {
+            if (e.checked) {
+              if (thisDate) {
+                const dateNow = new Date(e.date);
+                console.log(thisDate.getDate() == dateNow.getDate());
+                if (
+                  !(
+                    thisDate.getFullYear() == dateNow.getFullYear() &&
+                    thisDate.getMonth() == dateNow.getMonth() &&
+                    thisDate.getDate() == dateNow.getDate()
+                  )
+                ) {
+                  counter = 1;
+                } else {
+                  counter++;
+                }
+              } else {
+                counter++;
+              }
+
+              const dateBro = new Date(e.date);
+
+              dateBro.setDate(dateBro.getDate() + 1);
+              // console.log(e);
+              thisDate = dateBro;
+              // console.log(thisDate);
+            }
+          });
+
+          newItens[props.index].days = counter;
+          return newItens;
+        });
+      }
+
+      console.log(updatedChecklistState);
+
+      setChecklistState(updatedChecklistState);
 
       const updatedDatesPositions = datesPositions.map((objeto) => {
         if (

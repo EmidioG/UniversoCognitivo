@@ -1,8 +1,6 @@
-import { RFValue } from 'react-native-responsive-fontsize';
 import styled from 'styled-components/native';
 
 export const Container = styled.View`
-  padding-top: ${RFValue(10)}px;
   background-color: #222;
   flex: 1;
 `;

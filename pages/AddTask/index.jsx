@@ -10,11 +10,12 @@ import {
   ColorsOrganize,
   OverflowView,
   ContainerScroll,
+  Type,
 } from './style';
 import Label from '../../components/Form/Label';
 import Radio from '../../components/Form/Radio';
 import CircleInput from '../../components/Form/CircleInput';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ColorsRadio from '../../components/Form/ColorsRadio';
 import { useItens } from '../../context/ItensContext';
 import { useNavigation } from '@react-navigation/native';
@@ -29,6 +30,8 @@ export default function AddTask() {
   };
 
   const MetaMetric = ['Dias', 'Meses', 'Anos'];
+
+  const TypesMeta = ['Continua', 'Simples'];
 
   const ColorsArr = [
     { blue: '#221155', blue_light: 'rgba(34, 17, 85, 0.5)' },
@@ -56,6 +59,8 @@ export default function AddTask() {
 
   const [meta, setMeta] = useState('');
 
+  const [type, setType] = useState(0);
+
   const { itens, setItens } = useItens();
 
   const storeData = async (value, key) => {
@@ -77,22 +82,77 @@ export default function AddTask() {
 
   const navigation = useNavigation();
 
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const data = await getData('habits');
+        // console.log('bixo', data);
+        setItens(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    loadData();
+  }, []); // remova a dependência vazia []
+
   const handleAddTask = async () => {
-    setItens((prevItens) => [
-      ...prevItens,
-      {
-        porcent: 30,
-        nome: habitName,
-        i: prevItens.length,
-        meta: meta,
-        days: 5,
-        color: color,
-      },
-    ]);
-    navigation.navigate('Home');
-    await storeData(itens, 'habits');
+    let updatedItens;
+
+    if (itens) {
+      const conflict = itens.filter((e) => {
+        if (e.nome == habitName) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+      if (!conflict[0]?.nome && colorIsSelected && meta) {
+        //!verifica se conflict é false
+        updatedItens = [
+          ...itens,
+          {
+            porcent: 30,
+            nome: habitName,
+            i: itens.length,
+            meta:
+              metricIsSelected == 0
+                ? meta
+                : metricIsSelected == 1
+                  ? meta * 30
+                  : meta * 365,
+            days: 0,
+            color: color,
+            tipoDeMeta: type,
+          },
+        ];
+        await storeData(updatedItens, 'habits');
+      }
+    } else if (colorIsSelected && meta) {
+      updatedItens = [
+        {
+          porcent: 30,
+          nome: habitName,
+          i: 0,
+          meta:
+            metricIsSelected == 0
+              ? meta
+              : metricIsSelected == 1
+                ? meta * 30
+                : meta * 365,
+          days: 0,
+          color: color,
+          tipoDeMeta: type,
+        },
+      ];
+
+      await storeData(updatedItens, 'habits');
+    }
+
+    setItens(updatedItens);
     const itensBro = await getData('habits');
-    console.log(itensBro);
+    navigation.navigate('Home');
   };
 
   return (
@@ -123,6 +183,24 @@ export default function AddTask() {
                   </RadioItens>
                 </OverflowView>
               </Meta>
+            </Separator>
+            <Separator>
+              <Label name="Tipo de meta" />
+              <Type>
+                <OverflowView width={scrollViewWidth}>
+                  <RadioItens onLayout={handleScrollViewLayout}>
+                    {TypesMeta.map((e, i) => (
+                      <Radio
+                        name={e}
+                        key={i}
+                        index={i}
+                        whatIsSelected={type}
+                        setIsSelected={setType}
+                      />
+                    ))}
+                  </RadioItens>
+                </OverflowView>
+              </Type>
             </Separator>
             <Separator>
               <Label name="Cor" />

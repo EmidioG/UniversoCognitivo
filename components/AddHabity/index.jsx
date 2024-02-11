@@ -2,11 +2,12 @@ import { TouchableOpacity, View } from 'react-native';
 import React from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation, useNavigationState } from '@react-navigation/native';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useItens } from '../../context/ItensContext';
 
 export default function AddHabity(props) {
-  const [status, setStatus] = useState(['add']);
+  const { status, setStatus } = useItens();
 
   const navigation = useNavigation();
   const navigationState = useNavigationState((state) => state);
@@ -24,11 +25,11 @@ export default function AddHabity(props) {
   }, [navigationState]);
 
   const goToDetails = () => {
-    if (status.includes('add')) {
+    if (!status.includes('Home')) {
       navigation.navigate('Add');
-      setStatus(['back']);
+      setStatus(['Home']);
     } else {
-      navigation.goBack();
+      navigation.navigate('Home');
       setStatus(['add']);
     }
   };
@@ -36,7 +37,7 @@ export default function AddHabity(props) {
   return (
     <View>
       <TouchableOpacity onPress={goToDetails}>
-        {status[0] == 'add' ? (
+        {status[0] !== 'Home' ? (
           <Icon name="add-circle-outline" size={RFValue(40)} color="#a035cd" />
         ) : (
           <Icon
