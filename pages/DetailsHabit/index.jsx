@@ -1,5 +1,5 @@
-import { Dimensions, Text } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { Dimensions, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import {
   Body,
   Container,
@@ -9,32 +9,37 @@ import {
   Circle,
   Calendar,
   ItemCalendar,
-} from './style';
+  JogaYJoga,
+  SubTitle,
+  Btn,
+  SubHighLight,
+  ArrowIconBack,
+  ArrowIconForward,
+} from './style'
+import CalendarComponent from './Components/Calendar'
 
 export default function DetailsHabit() {
   //!               """""""""""""""                  CIRCLE
-  const [screenWidth, setScreenWidth] = useState(
-    Dimensions.get('window').width
-  );
+  const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width)
 
   useEffect(() => {
     const updateScreenWidth = () => {
-      setScreenWidth(Dimensions.get('window').width);
-    };
+      setScreenWidth(Dimensions.get('window').width)
+    }
 
     // Adiciona um listener para detectar mudanças no tamanho da tela
-    Dimensions.addEventListener('change', updateScreenWidth);
-  }, []);
+    Dimensions.addEventListener('change', updateScreenWidth)
+  }, [])
 
-  const porcent = 0.7;
+  const porcent = 0.7
 
-  let daysARR = [];
+  let daysARR = []
 
   for (let index = 0; index < 366; index++) {
     if (index == 365) {
-      daysARR.push('MaN');
+      daysARR.push('MaN')
     } else {
-      daysARR.push('01');
+      daysARR.push('01')
     }
   }
 
@@ -42,7 +47,7 @@ export default function DetailsHabit() {
     porcent < 1
       ? porcent * 1.9 * Number(screenWidth)
       : porcent * 2 * Number(screenWidth)
-  }`;
+  }`
   //!                  """""""""""""               CIRCLE
   return (
     <Body>
@@ -63,13 +68,22 @@ export default function DetailsHabit() {
       </Container>
       {/* // 7x27 // 14x27 // 7x53 */}
       <Container>
-        <Text>Calendario</Text>
-        <Calendar>
-          {daysARR.map((e, i) => {
-            return <ItemCalendar key={i}>{e}</ItemCalendar>;
-          })}
-        </Calendar>
+        <JogaYJoga>
+          <Title>Calendario</Title>
+
+          <JogaYJoga>
+            <Btn>
+              <ArrowIconBack />
+            </Btn>
+            <SubTitle>2024</SubTitle>
+            <Btn>
+              <ArrowIconForward />
+            </Btn>
+          </JogaYJoga>
+        </JogaYJoga>
+
+        <CalendarComponent />
       </Container>
     </Body>
-  );
+  )
 }

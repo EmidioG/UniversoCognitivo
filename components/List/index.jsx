@@ -1,57 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { Habit, HabitPorcent, Container, Circle, Touch } from './style';
+import React, { useEffect, useState } from 'react'
+import { Habit, HabitPorcent, Container, Circle, Touch } from './style'
 
-import { Dimensions, Text } from 'react-native';
-import Dates from '../Dates';
-import { useNavigation, useNavigationState } from '@react-navigation/native';
-import { useItens } from '../../context/ItensContext';
+import { Dimensions, Text } from 'react-native'
+import Dates from '../Dates'
+import { useNavigation, useNavigationState } from '@react-navigation/native'
+import { useItens } from '../../context/ItensContext'
 
 export default function List(props) {
-  const [screenWidth, setScreenWidth] = useState(
-    Dimensions.get('window').width
-  );
-
-  useEffect(() => {
-    const updateScreenWidth = () => {
-      setScreenWidth(Dimensions.get('window').width);
-    };
-
-    // Adiciona um listener para detectar mudanças no tamanho da tela
-    Dimensions.addEventListener('change', updateScreenWidth);
-  }, []);
+  const { screenWidth } = useItens()
 
   const tamanhoCirculo = `${
     props.days / props.meta < 1
       ? (props.days / props.meta) * 1.9 * Number(screenWidth)
       : (props.days / props.meta) * 2 * Number(screenWidth)
-  }`;
+  }`
 
-  const { status, setStatus } = useItens();
+  const { status, setStatus } = useItens()
 
-  const navigation = useNavigation();
-  const navigationState = useNavigationState((state) => state);
+  const navigation = useNavigation()
+  const navigationState = useNavigationState((state) => state)
   //!                            não tenho certeza absoluta se esse código tá perfeito
   useEffect(() => {
     return () => {
       if (navigationState && navigationState.routes) {
-        const currentRoute = navigationState.routes[navigationState.index];
+        const currentRoute = navigationState.routes[navigationState.index]
 
         if (currentRoute.name == 'DetailsHabit') {
-          setStatus(['DetailsHabit']);
+          setStatus(['DetailsHabit'])
         }
       }
-    };
-  }, [navigationState]);
+    }
+  }, [navigationState])
 
   const openDetails = () => {
     if (!status.includes('Home')) {
-      navigation.navigate('DetailsHabit');
-      setStatus(['Home']);
+      navigation.navigate('DetailsHabit')
+      setStatus(['Home'])
     } else {
-      navigation.navigate('Home');
-      setStatus(['DetailsHabit']);
+      navigation.navigate('Home')
+      setStatus(['DetailsHabit'])
     }
-  };
+  }
 
   return (
     <Container corI={props.index} color={props.color[1]}>
@@ -70,5 +59,5 @@ export default function List(props) {
 
       <Text></Text>
     </Container>
-  );
+  )
 }

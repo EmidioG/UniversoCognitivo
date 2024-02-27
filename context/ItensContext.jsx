@@ -1,6 +1,7 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { Dimensions } from 'react-native'
 
-const ItensContext = createContext();
+const ItensContext = createContext()
 
 export const ItensProvider = ({ children }) => {
   const [itens, setItens] = useState([
@@ -36,22 +37,42 @@ export const ItensProvider = ({ children }) => {
     //   days: 99,
     //   color: ['#6600cc', 'rgba(102, 0, 204, 0.5)'],
     // },
-  ]);
+  ])
 
-  const [status, setStatus] = useState(['add']);
+  const [screenWidth, setScreenWidth] = useState(Dimensions.get('window').width)
+
+  useEffect(() => {
+    const updateScreenWidth = () => {
+      setScreenWidth(Dimensions.get('window').width)
+    }
+
+    // Adiciona um listener para detectar mudanças no tamanho da tela
+    Dimensions.addEventListener('change', updateScreenWidth)
+  }, [])
+
+  const [status, setStatus] = useState(['add'])
 
   // console.log(itens);
   return (
-    <ItensContext.Provider value={{ itens, setItens, status, setStatus }}>
+    <ItensContext.Provider
+      value={{
+        itens,
+        setItens,
+        status,
+        setStatus,
+        screenWidth,
+        setScreenWidth,
+      }}
+    >
       {children}
     </ItensContext.Provider>
-  );
-};
+  )
+}
 
 export const useItens = () => {
-  const context = useContext(ItensContext);
+  const context = useContext(ItensContext)
   if (!context) {
-    throw new Error('useItens must be used within an ItensProvider');
+    throw new Error('useItens must be used within an ItensProvider')
   }
-  return context;
-};
+  return context
+}
